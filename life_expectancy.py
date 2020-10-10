@@ -42,6 +42,7 @@ for index, row in df_life_exp.iterrows():
 
 df_africa['life_exp'] = None
 df_africa['color'] = None
+df_africa['location'] = None
 
 for index, row in df_africa.iterrows():
     df_africa.at[index, 'life_exp'] = african_life_exp_dict[row['country_code']]
@@ -54,12 +55,21 @@ for index, row in df_africa.iterrows():
         df_africa.at[index, 'color'] = (row['life_exp'] / max_life_exp)
     else:
         df_africa.at[index, 'color'] = 0
+        
+north_african_countries = ['DZA', 'EGY', 'LBY', 'SDN', 'TUN']
+west_african_countries = ['BEN', 'BFA', 'CPV', 'CIV', 'GMB', 'GHA', 'GNB',
+                         'LBR', 'MLI', 'MRT', 'NER', 'NGA', 'SEN', 'SLE', 'TGO']
 
+for index, row in df_africa.iterrows():
+    if row['country_code'] in north_african_countries:
+        df_africa.at[index, 'location'] = 'N'
+    if row['country_code'] in west_african_countries:
+        df_africa.at[index, 'location'] = 'W'
 
 gf_africa = gpd.GeoDataFrame(df_africa)
 
 #Rename columns.
-gf_africa.columns = ['country', 'country_code', 'geometry', 'continent', 'life_exp', 'color']
+gf_africa.columns = ['country', 'country_code', 'geometry', 'continent', 'life_exp', 'color', 'location']
 
 #gf_africa.plot(column='color', cmap='Wistia')
 #plt.show()
@@ -97,8 +107,7 @@ f.suptitle("Queen neighbors of `NAM`")
 plt.show()
 '''
 
-north_african_countries = ['DZA', 'EGY', 'LBY', 'SDN', 'TUN']
-west_africa_countries = ['BEN', 'BFA', 'CPV', 'CIV', 'GMB', 'GHA', 'GNB',
-                         'LBR', 'MLI', 'MRT', 'NER', 'NGA', 'SEN', 'SLE', 'TGO']
 
 #block weights
+#lookup = gf_africa['location']
+#w_block = ps.block_weights(gf_africa['location'])
